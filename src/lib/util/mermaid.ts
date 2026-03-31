@@ -48,6 +48,8 @@ const isValidDiagram = (diagram: DiagramDefinition): diagram is Required<Diagram
   return Boolean(diagram.name && diagram.examples && diagram.examples.length > 0);
 };
 
+const EXCLUDED_DIAGRAMS = new Set(['Sankey', 'Git', 'Kanban', 'Packet', 'Treemap']);
+
 export const getSampleDiagrams = () => {
   const diagrams = diagramData
     .filter((d) => isValidDiagram(d))
@@ -57,7 +59,10 @@ export const getSampleDiagrams = () => {
     }));
   const examples: Record<string, string> = {};
   for (const diagram of diagrams) {
-    examples[diagram.name.replace(/ (Diagram|Chart|Graph)/, '')] = diagram.example.code;
+    const key = diagram.name.replace(/ (Diagram|Chart|Graph)/, '');
+    if (!EXCLUDED_DIAGRAMS.has(key)) {
+      examples[key] = diagram.example.code;
+    }
   }
   return examples;
 };
