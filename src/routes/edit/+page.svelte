@@ -16,6 +16,7 @@
   import * as Resizable from '$/components/ui/resizable';
   import { Switch } from '$/components/ui/switch';
   import { Toggle } from '$/components/ui/toggle';
+  import CanvasToolbar from '$/components/CanvasToolbar.svelte';
   import VersionSecurityToolbar from '$/components/VersionSecurityToolbar.svelte';
   import View from '$/components/View.svelte';
   import type { EditorMode, Tab } from '$/types';
@@ -150,6 +151,7 @@
         <Resizable.Handle class="mr-1 hidden opacity-0 sm:block" />
         <Resizable.Pane minSize={15} class="relative flex h-full flex-1 flex-col overflow-hidden">
           <View {panZoomState} shouldShowGrid={$stateStore.grid} />
+          <div class="absolute top-0 left-1/2 -translate-x-1/2"><CanvasToolbar /></div>
           <div class="absolute top-0 right-0"><PanZoomToolbar {panZoomState} /></div>
           <div class="absolute right-0 bottom-0"><VersionSecurityToolbar /></div>
           <div class="absolute bottom-0 left-0 sm:left-5"><SyncRoughToolbar /></div>

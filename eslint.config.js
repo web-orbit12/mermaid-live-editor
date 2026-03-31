@@ -59,7 +59,9 @@ export default defineConfig(
       }
     },
     rules: {
-      'svelte/no-unused-props': 'off'
+      'svelte/no-unused-props': 'off',
+      // Catch fatal compile errors (e.g. duplicate <script>) without failing on compile warnings.
+      'svelte/valid-compile': ['error', { ignoreWarnings: true }]
     }
   },
   {
