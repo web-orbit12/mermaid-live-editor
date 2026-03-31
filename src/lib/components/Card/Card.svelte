@@ -18,6 +18,7 @@
       class?: string;
     };
     onselect?: (tab: Tab) => void;
+    onclose?: () => void;
     actions?: Snippet;
     children: Snippet;
   }
@@ -31,11 +32,16 @@
     title,
     icon,
     onselect,
+    onclose,
     actions,
     children
   }: Props = $props();
 
   const toggleCardOpen = () => {
+    if (isOpen && onclose) {
+      onclose();
+      return;
+    }
     if (isClosable) {
       isOpen = !isOpen;
     }
@@ -73,7 +79,7 @@
 
     {@render actions?.()}
 
-    {#if isOpen && isClosable}
+    {#if isOpen && (isClosable || onclose)}
       <CollapseAllIcon />
     {/if}
   </div>

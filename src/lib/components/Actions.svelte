@@ -24,6 +24,12 @@
 
   type Exporter = (context: CanvasRenderingContext2D, image: HTMLImageElement) => () => void;
 
+  interface Props {
+    onclose?: () => void;
+  }
+
+  let { onclose }: Props = $props();
+
   const getFileName = (extension: string) =>
     `mermaid-diagram-${dayjs().format('YYYY-MM-DD-HHmmss')}.${extension}`;
 
@@ -263,9 +269,14 @@ ${svgString}`);
   </div>
 {/snippet}
 
-<Card title="Actions" isStackable icon={{ component: DownloadIcon, class: 'rotate-180' }}>
-  <div class="flex min-w-fit flex-col gap-2 p-2">
-    <div class="flex w-full items-center gap-2 py-2 whitespace-nowrap">
+<Card
+  title="Actions"
+  isOpen={!!onclose}
+  isStackable
+  icon={{ component: DownloadIcon, class: 'rotate-180' }}
+  {onclose}>
+  <div class="flex w-full flex-col gap-2 p-3">
+    <div class="flex w-full flex-wrap items-center gap-2 py-2">
       PNG size
       <ToggleGroup.Root type="single" variant="outline" bind:value={imageSizeMode}>
         <ToggleGroup.Item value="auto">Auto</ToggleGroup.Item>
@@ -283,7 +294,7 @@ ${svgString}`);
         disabled={imageSizeMode === 'auto'}
         bind:value={imageSize} />
     </div>
-    <div class="flex gap-2">
+    <div class="flex flex-wrap gap-2">
       {@render dualActionButton('PNG', onDownloadPNG, $urlsStore.png)}
       {@render dualActionButton('SVG', onDownloadSVG, $urlsStore.svg)}
       <ExternalLinkWrapper domain={getDomain($urlsStore.kroki)} isVisible={!!$urlsStore.kroki}>

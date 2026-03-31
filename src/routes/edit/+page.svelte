@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Actions from '$/components/Actions.svelte';
   import Card from '$/components/Card/Card.svelte';
   import DiagramDocButton from '$/components/DiagramDocumentationButton.svelte';
   import Editor from '$/components/Editor.svelte';
+  import ExportModal from '$/components/ExportModal.svelte';
   import History from '$/components/History/History.svelte';
   import McWrapper from '$/components/McWrapper.svelte';
   import MermaidChartIcon from '$/components/MermaidChartIcon.svelte';
@@ -20,6 +20,7 @@
   import View from '$/components/View.svelte';
   import type { EditorMode, Tab } from '$/types';
   import { shouldShowEditorChooser } from '$/util/migration/domainMigration';
+  import { leftPanelStore } from '$/util/leftPanel';
   import { PanZoomState } from '$/util/panZoom';
   import { stateStore, updateCodeStore, urlsStore } from '$/util/state';
   import { logEvent, logMermaidChartClick } from '$/util/stats';
@@ -89,6 +90,7 @@
     <Toggle bind:pressed={isHistoryOpen} size="sm">
       <HistoryIcon />
     </Toggle>
+    <ExportModal />
     <Share />
     <McWrapper>
       <Button
@@ -104,6 +106,23 @@
   </Navbar>
 
   <div class="flex flex-1 flex-col overflow-hidden" bind:clientWidth={width}>
+    {#if $leftPanelStore}
+      <div
+        class="fixed inset-0 z-40 bg-black/30"
+        role="button"
+        tabindex="-1"
+        aria-label="Close panel"
+        onclick={() => leftPanelStore.set(null)}
+        onkeydown={(e) => e.key === 'Escape' && leftPanelStore.set(null)}>
+      </div>
+    {/if}
+    {#if $leftPanelStore === 'samples'}
+      <div
+        data-left-panel
+        class="fixed top-[80px] left-4 z-50 w-72 rounded-xl border border-border bg-background shadow-2xl sm:left-6">
+        <Preset onclose={() => leftPanelStore.set(null)} />
+      </div>
+    {/if}
     <div
       class={[
         'size-full',
@@ -126,11 +145,6 @@
               {/snippet}
               <Editor {isMobile} />
             </Card>
-
-            <div class="group flex flex-wrap justify-between gap-4 sm:gap-6">
-              <Preset />
-              <Actions />
-            </div>
           </div>
         </Resizable.Pane>
         <Resizable.Handle class="mr-1 hidden opacity-0 sm:block" />

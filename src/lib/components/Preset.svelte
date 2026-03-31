@@ -6,6 +6,12 @@
   import { logEvent } from '$lib/util/stats';
   import ShapesIcon from '~icons/material-symbols/account-tree-outline-rounded';
 
+  interface Props {
+    onclose?: () => void;
+  }
+
+  let { onclose }: Props = $props();
+
   const samples = getSampleDiagrams();
   const loadSampleDiagram = (diagramType: string): void => {
     updateCode(samples[diagramType], {
@@ -32,8 +38,8 @@
   ];
 </script>
 
-<Card title="Sample Diagrams" isOpen isStackable icon={{ component: ShapesIcon }}>
-  <div class="flex h-fit max-h-52 flex-wrap gap-2 overflow-y-auto p-2">
+<Card title="Sample Diagrams" isOpen isStackable icon={{ component: ShapesIcon }} {onclose}>
+  <div class="flex h-fit flex-wrap gap-2 p-2">
     {#each diagramOrder as sample (sample)}
       <Button
         size="sm"
